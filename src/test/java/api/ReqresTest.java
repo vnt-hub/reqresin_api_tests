@@ -4,6 +4,7 @@ import io.restassured.http.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,8 +23,7 @@ public class ReqresTest {
                 .log().status()
                 .log().body()
                 .extract().body().jsonPath().getList("data", UserData.class);
-
-        users.forEach(x-> Assert.assertTrue(x.getAvatar().contains(x.getId().toString())));
+        users.forEach(x->Assert.assertTrue(x.getAvatar().contains(x.getId().toString())));
         Assert.assertTrue(users.stream().allMatch(x->x.getEmail().endsWith("@reqres.in")));
 
         List<String> avatars = users.stream().map(UserData::getAvatar).toList();
