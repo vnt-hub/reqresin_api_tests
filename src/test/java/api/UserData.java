@@ -1,5 +1,8 @@
 package api;
 
+import lombok.Getter;
+
+@Getter
 public class UserData {
     private Integer id;
     private String email;
@@ -15,26 +18,8 @@ public class UserData {
         this.avatar = avatar;
     }
 
-    public UserData(){
+    public UserData() {
 
     }
 
-    public Integer getId() {
-        return id;
-    }
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFirst_name() {
-        return first_name;
-    }
-
-    public String getLast_name() {
-        return last_name;
-    }
-
-    public String getAvatar() {
-        return avatar;
-    }
 }
