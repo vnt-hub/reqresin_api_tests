@@ -35,7 +35,7 @@ public class ReqresTest {
 
     }
 
-    public void checkRegistrationSuccess() {
+    public void checkRegistrationSuccessTest() {
         Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
         Integer id = 4;
         String token = "QpwL5tke4Pnpja7X4";
@@ -50,5 +50,20 @@ public class ReqresTest {
                 .extract().as(SuccessRegistration.class);
         Assert.assertEquals(id, successRegistration.getId());
         Assert.assertEquals(token, successRegistration.getToken());
+    }
+
+    public void checkRegistrationUnSuccessTest() {
+        Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec400());
+        String error = "Missing password";
+        Registration user = new Registration("sydney@fife","");
+        UnSucessRegistration unSucessRegistration = given()
+                .body(user)
+                .when()
+                .post("/api/register")
+                .then()
+                .log().status()
+                .log().body()
+                .extract().as(UnSucessRegistration.class);
+        Assert.assertEquals(error, unSucessRegistration.getError());
     }
 }
