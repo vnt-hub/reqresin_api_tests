@@ -15,10 +15,10 @@ public class ReqresTest {
 
     @Test
     public void checkAvatarAndIdTest() {
+        Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
         List<UserData> users = given()
                 .when()
-                .contentType(ContentType.JSON)
-                .get(URL+"/api/users?page=2")
+                .get("/api/users?page=2")
                 .then()
                 .log().status()
                 .log().body()
@@ -29,8 +29,9 @@ public class ReqresTest {
         List<String> avatars = users.stream().map(UserData::getAvatar).toList();
         List<String> ids = users.stream().map(x->x.getId().toString()).toList();
 
-        for (int i = 0; i<avatars.size(); i++) {
+        for (int i = 0; i < avatars.size(); i++) {
             Assert.assertTrue(avatars.get(i).contains(ids.get(i)));
         }
+
     }
 }
