@@ -1,12 +1,9 @@
 package api;
 
-import io.restassured.http.ContentType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
@@ -65,5 +62,21 @@ public class ReqresTest {
                 .log().body()
                 .extract().as(UnSucessRegistration.class);
         Assert.assertEquals(error, unSucessRegistration.getError());
+    }
+
+    public void checkListResourceSortYears() {
+        Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
+        List<Resource> resources = given()
+                .when()
+                .get("/api/unknown")
+                .then()
+                .log().status()
+                .log().body()
+                .extract().body().jsonPath().getList("data", Resource.class);
+        List<Integer> years = resources.stream().map(Resource::getYear).toList();
+        List<Integer> yearsSorted = years.stream().sorted().toList();
+        Assert.assertEquals(yearsSorted, years);
+        System.out.println(years);
+        System.out.println(yearsSorted);
     }
 }
