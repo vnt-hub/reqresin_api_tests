@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
+@Test
 public class ReqresTest {
     private static final String URL = "https://reqres.in";
 
-    @Test
     public void checkAvatarAndIdTest() {
         Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
         List<UserData> users = given()
@@ -33,5 +33,22 @@ public class ReqresTest {
             Assert.assertTrue(avatars.get(i).contains(ids.get(i)));
         }
 
+    }
+
+    public void checkRegistrationSuccess() {
+        Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
+        Integer id = 4;
+        String token = "QpwL5tke4Pnpja7X4";
+        Registration user = new Registration("eve.holt@reqres.in","pistol");
+        SuccessRegistration successRegistration = given()
+                .body(user)
+                .when()
+                .post("/api/register")
+                .then()
+                .log().status()
+                .log().body()
+                .extract().as(SuccessRegistration.class);
+        Assert.assertEquals(id, successRegistration.getId());
+        Assert.assertEquals(token, successRegistration.getToken());
     }
 }
