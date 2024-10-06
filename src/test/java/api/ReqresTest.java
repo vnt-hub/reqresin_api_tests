@@ -3,6 +3,7 @@ package api;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.time.Clock;
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
@@ -64,7 +65,7 @@ public class ReqresTest {
         Assert.assertEquals(error, unSucessRegistration.getError());
     }
 
-    public void checkListResourceSortYears() {
+    public void checkListResourceSortYearsTest() {
         Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
         List<Resource> resources = given()
                 .when()
@@ -78,5 +79,33 @@ public class ReqresTest {
         Assert.assertEquals(yearsSorted, years);
         System.out.println(years);
         System.out.println(yearsSorted);
+    }
+
+    public void deleteTheSecondUserTest() {
+        Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec204());
+        given()
+                .when()
+                .delete("/api/users/2")
+                .then()
+                .log().status()
+                .log().body();
+    }
+
+    public void checkTimeTest() {
+        Specs.installSpecification(Specs.requestSpec(URL), Specs.responseSpec200());
+        UserTime user = new UserTime("morpheus", "zion resident");
+        UserTimeResponse userTimeResponse = given()
+                .body(user)
+                .when()
+                .put("/api/users/2")
+                .then()
+                .log().status()
+                .log().body()
+                .extract().as(UserTimeResponse.class);
+        String currentTime = Clock.systemUTC().instant().toString().substring(0,15);
+        String responseTime = userTimeResponse.getUpdatedAt().substring(0,15);
+        Assert.assertEquals(currentTime, responseTime);
+        System.out.println(currentTime);
+        System.out.println(responseTime);
     }
 }
